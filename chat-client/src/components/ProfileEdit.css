@@ -5,3 +5,9 @@
 .profile-page form div,button {
     margin: 5px;
 }
+
+.profile-save-button-wrapper {
+    display: flex;
+    width: 100%;
+    justify-content: right;
+}

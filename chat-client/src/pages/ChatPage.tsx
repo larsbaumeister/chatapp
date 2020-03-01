@@ -10,7 +10,7 @@ type ChatPageState = {
 
 const ChatPage: FunctionComponent<ChatPageProps> = () => {
     return (
-        <div></div>
+        <div>Chat Page</div>
     )
 }
 

@@ -9,7 +9,8 @@ type ProfileEditProps = {
     birthday: string,
     username: string,
     onPropChange: (propName: string, propValue: any) => void,
-    onSave: () => void
+    onSave: () => void,
+    saveButtonText?: string
 }
 
 
@@ -19,18 +20,21 @@ const ProfileEdit: FunctionComponent<ProfileEditProps> = (props) => {
     
     return (
         <div className='profile-page'>
-            <h3>Edit your profile {props.firstName}</h3>
-
             <form>
                 <TextInput label='Username' name='username' value={props.username} onChange={onChange} />
                 <TextInput label='EMail' type='email' name='email' value={props.email} onChange={onChange} />
                 <TextInput label='Firstname' name='firstName' value={props.firstName} onChange={onChange} />
                 <TextInput label='Lastname' name='lastName' value={props.lastName} onChange={onChange} />
                 <TextInput label='Birthday' name='birthday' value={props.birthday} onChange={onChange} />
-                <button onClick={evt => props.onSave() } >Save</button>
+                <div className='profile-save-button-wrapper'><button onClick={evt => props.onSave() } >{props.saveButtonText}</button></div>
             </form>
 
         </div>
     )
 }
+
+ProfileEdit.defaultProps = {
+    saveButtonText: 'Save'
+}
+
 export default ProfileEdit

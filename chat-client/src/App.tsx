@@ -5,7 +5,7 @@ import { ApolloProvider } from '@apollo/react-hooks';
 import { client } from './connection/GqlClient';
 import ProfilePage from './pages/ProfilePage';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import LoginPage from './pages/LoginPage';
+import LoginPage from './pages/LoginPage/LoginPage';
 
 
 export default function App() {
