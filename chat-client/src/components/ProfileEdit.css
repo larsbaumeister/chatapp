@@ -1,0 +1,7 @@
+.profile-page form {
+    display: block;
+}
+
+.profile-page form div,button {
+    margin: 5px;
+}
