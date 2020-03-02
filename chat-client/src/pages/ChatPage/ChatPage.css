@@ -1,0 +1,19 @@
+
+
+.chat-page {
+    display: grid;
+    grid-template-columns: 250px auto;
+    grid-template-rows: 100vh;
+    grid-template-areas: "chatlist chatpanel";
+}
+
+.chat-list {
+    grid-area: chatlist;
+    background-color: red;
+    
+}
+
+.chat-panel {
+    grid-area: chatpanel;
+    background-color: yellow;
+}

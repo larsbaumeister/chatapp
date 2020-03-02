@@ -1,13 +1,12 @@
-import { Connection } from "typeorm"
+
 import { User } from "../entity/User"
 import { hash, compare } from 'bcryptjs'
-import { sign, verify } from 'jsonwebtoken'
+import { sign } from 'jsonwebtoken'
 import { MessageRepository } from "../repo/MessageRepository"
 import { UserRepository } from "../repo/UserRepository"
 import { getRepo, JWT_SECRET, CTX } from ".."
-import { AuthenticationError, withFilter } from "apollo-server"
+import { AuthenticationError, withFilter, UserInputError } from "apollo-server"
 import { PUB_SUB, EventType } from "./Events"
-import { EventEmitter } from "typeorm/platform/PlatformTools"
 
 async function login(ctx, email: string, password: string) {
     const foundUser = await getRepo(ctx, UserRepository).findOneOrFail({email})
@@ -39,11 +38,17 @@ export const UserGql =  {
             sendMessages: [Message]
             receivedMessages: [Message]
             friends: [User]
+            chats: [Chat]
         }
         
         type LoginResponse {
             token: String
             user: User
+        }
+
+        type Chat {
+            otherUser: User
+            messages: [Message]
         }
 
         input UserRegisterInput {
@@ -55,7 +60,6 @@ export const UserGql =  {
             lastName: String
             birthday: Date
         }
-
 
         type Query {
             users(id: Int): [User]
@@ -96,11 +100,12 @@ export const UserGql =  {
                 if (user.password) {
                     // if the password was set, we hash it and store it into the database
                     user.password = await hash(user.password, 10)
-                }
-                else if (user.id) {
+                } else if (user.id) {
                     // if the password has not been set, we want to leave it as it is, therefore we fetch the current password from the database
                     user.password = (await getRepo(ctx, UserRepository).findOneOrFail({id: user.id})).password
                     isNewUser = false
+                } else {
+                    throw new UserInputError('User with id not found')
                 }
                     
                 const savedUser: User = await getRepo(ctx, UserRepository).save(user)
@@ -136,7 +141,23 @@ export const UserGql =  {
         User: {
             sendMessages: async (parent, args, ctx: CTX) => await getRepo(ctx, MessageRepository).findBySender(parent.id),
             receivedMessages: async (parent, args, ctx: CTX) => await getRepo(ctx, MessageRepository).findByReceiver(parent.id),
-            friends: async (parent, args, ctx: CTX) => await getRepo(ctx, UserRepository).findFriendsForUser(parent.id)
+            friends: async (parent, args, ctx: CTX) => await getRepo(ctx, UserRepository).findFriendsForUser(parent.id),
+            chats: async (parent, args, ctx: CTX) => {
+                const ownUserId: number = parent.id;
+                const userRepo = getRepo(ctx, UserRepository)
+                const messageRepo = getRepo(ctx, MessageRepository)
+
+                const chats = []
+                for (const friend of await userRepo.findFriendsForUser(ownUserId)) {
+                    const messages = await messageRepo.findMessageForChat(ownUserId, friend.id)
+                    chats.push({
+                        otherUser: friend,
+                        messages,
+                    })
+                }
+
+                return chats
+            }
         }
     }
 }

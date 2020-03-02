@@ -14,9 +14,9 @@ export const MessageGql = {
             sender: User!
             receiver: User!
             content: String!
-            sendDate: String
-            receivedDate: String
-            readDate: String
+            sendDate: Date
+            receivedDate: Date
+            readDate: Date
         }
         
         input SendMessageInput {
@@ -28,6 +28,7 @@ export const MessageGql = {
         type Query {
             messages: [Message]
             loadChat(user1Id: Int!, user2Id: Int!): [Message]
+            loadChats(userId: Int): [Message]
         }
 
         type Mutation {

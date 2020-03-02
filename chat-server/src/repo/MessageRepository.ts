@@ -15,6 +15,12 @@ export class MessageRepository extends Repository<Message> {
             .getMany()
     }
 
+    findMessagesForUser(userId: number) {
+        return this.createQueryBuilder('message')
+            .where('message.sender.id = :userId OR message.receiver.id = :userId', { userId })
+            .getMany()
+    }
+
     findBySender(userId: number) {
         return this.find({senderId: userId})
     }

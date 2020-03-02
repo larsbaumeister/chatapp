@@ -21,8 +21,8 @@
     box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.61);
 }
 
-.login-card div, input {
-    margin: 4px 0px;
+.login-card h3 {
+    text-align: center;
 }
 
 .login-card input {
@@ -36,14 +36,13 @@
     padding-bottom: 15px;
 }
 
-
 .login-tab-title div:hover {
-    color: rgb(31, 59, 100);
+    color: rgb(63, 189, 119);
     cursor: pointer;
 }
 
 .login-tab-title div.active {
-    color: rgb(31, 59, 100);
+    color: rgb(63, 189, 119);
 }
 
 

@@ -20,9 +20,12 @@
       "lodash": "^4.17.15",
       "pg": "^7.3.0",
       "reflect-metadata": "^0.1.10",
+      "ts-node-dev": "^1.0.0-pre.44",
       "typeorm": "0.2.22"
    },
    "scripts": {
-      "start": "ts-node src/index.ts"
+      "tsc": "tsc",
+      "start": "ts-node-dev --respawn --transpileOnly src/index.ts",
+      "prod": "tsc && cd build && node index.js"
    }
 }

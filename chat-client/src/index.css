@@ -1,6 +1,7 @@
 body {
   margin: 0;
   font-family: 'Spartan';
+  font-size: .9em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -40,6 +41,7 @@ button {
 }
 
 button:hover {
-  transform: translateY(-3px);
+  transform: translateY(-2px);
   cursor: pointer;
+  box-shadow: 0px 6px 6px 0px rgba(0,0,0,0.2);
 }

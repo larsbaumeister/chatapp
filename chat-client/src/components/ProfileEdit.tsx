@@ -8,6 +8,7 @@ type ProfileEditProps = {
     email: string,
     birthday: string,
     username: string,
+    password: string,
     onPropChange: (propName: string, propValue: any) => void,
     onSave: () => void,
     saveButtonText?: string
@@ -16,7 +17,10 @@ type ProfileEditProps = {
 
 const ProfileEdit: FunctionComponent<ProfileEditProps> = (props) => {
 
-    const onChange = (evt: ChangeEvent<HTMLInputElement>) => props.onPropChange(evt.target.name, evt.target.value)
+    const onChange = (evt: ChangeEvent<HTMLInputElement>) => {
+        evt.preventDefault()
+        props.onPropChange(evt.target.name, evt.target.value)
+    }
     
     return (
         <div className='profile-page'>
@@ -26,9 +30,9 @@ const ProfileEdit: FunctionComponent<ProfileEditProps> = (props) => {
                 <TextInput label='Firstname' name='firstName' value={props.firstName} onChange={onChange} />
                 <TextInput label='Lastname' name='lastName' value={props.lastName} onChange={onChange} />
                 <TextInput label='Birthday' name='birthday' value={props.birthday} onChange={onChange} />
-                <div className='profile-save-button-wrapper'><button onClick={evt => props.onSave() } >{props.saveButtonText}</button></div>
+                <TextInput label='Password' name='password' value={props.password} onChange={onChange} type='password' />
+                <div className='profile-save-button-wrapper'><button onClick={evt => {evt.preventDefault(); props.onSave();} } >{props.saveButtonText}</button></div>
             </form>
-
         </div>
     )
 }
