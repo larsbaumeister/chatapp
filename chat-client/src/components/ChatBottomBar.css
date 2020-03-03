@@ -1,0 +1,16 @@
+.chat-bottom-bar {
+    width: 100%;
+    display: flex;
+}
+
+.chat-bottom-bar .textinput {
+    flex-grow: 1;
+}
+
+.chat-bottom-bar input {
+    width: 100%;
+}
+
+.chat-bottom-bar button {
+    margin: 0px 10px;
+}

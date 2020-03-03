@@ -12,7 +12,7 @@ type TextInputProps = {
 const TextInput: FunctionComponent<TextInputProps> = (props: TextInputProps) => {
     return (
         <div className='textinput'>
-            <label>{props.label}</label>
+            {props.label ? <label>{props.label}</label> : null}
             <input name={props.name} type={props.type} value={props.value} onChange={props.onChange }></input>
         </div>
     )

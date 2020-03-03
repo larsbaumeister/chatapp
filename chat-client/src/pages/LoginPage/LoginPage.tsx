@@ -129,7 +129,7 @@ const LoginPage: FunctionComponent<LoginPageProps> = (props) => {
 
             <div className='login-background'>
                 <video autoPlay muted loop id=''>
-                    <source src="background.mp4" type="video/mp4"></source>
+                    <source src="/background.mp4" type="video/mp4"></source>
                 </video>
             </div>
             

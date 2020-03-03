@@ -5,6 +5,7 @@ import { gql } from 'apollo-boost'
 import ChatPanel from '../../components/ChatPanel'
 import './ChatPage.css'
 import { Route } from 'react-router-dom'
+import ChatBottomBar from '../../components/ChatBottomBar'
 
 type ChatPageProps = {
     userId: number
@@ -26,8 +27,18 @@ query($userId: Int!) {
             }
             messages {
                 content
-                sender {id}
-                receiver {id}
+                sender { 
+                    id
+                    username
+                    firstName
+                    lastName
+                 }
+                receiver {
+                    id
+                    username
+                    firstName
+                    lastName
+                }
                 sendDate
             }
         }
@@ -49,8 +60,10 @@ const ChatPage: FunctionComponent<ChatPageProps> = (props) => {
         <div className='chat-page'>
             <ChatList chats={data?.users[0]?.chats} />
 
-            <Route path='/chat/:userId' render={ props => <ChatPanel  />} />
+            <Route path='/chat/:userId' render={ props => <ChatPanel {...props} chats={data?.users[0]?.chats} />} />
             <Route exact path='/' component={() => <h3>No chat selected...</h3>} />
+
+            <ChatBottomBar />
         </div>
     )
 }

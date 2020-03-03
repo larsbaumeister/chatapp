@@ -7,16 +7,17 @@ type ChatListProps = {
 
 const ChatList: FunctionComponent<ChatListProps> = (props) => {
 
-    
     return (
         <div className='chat-list'>
-            <ul>
-                { props.chats?.map((chat: any, idx: number) => (
-                    <li key={idx}>
-                        <Link to={`/chat/${chat.otherUser.id}`}>{ `${chat.otherUser.firstName} ${chat.otherUser.lastName}`}</Link>
-                    </li>
-                )) }
-            </ul>
+
+            { props.chats?.map((chat: any) => (
+                <Link key={chat.otherUser.id} to={`/chat/${chat.otherUser.id}`}>
+                    <div className='chat-list-card'>
+                        <div className='user-name'>{ `${chat.otherUser.firstName} ${chat.otherUser.lastName}`}</div>
+                        <div className='last-message'>{ chat.messages?.[0]?.content || 'No messages' }</div>
+                    </div>
+                </Link>
+            )) }
         </div>
     )
 }
