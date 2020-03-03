@@ -4,10 +4,10 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { ApolloProvider } from '@apollo/react-hooks';
-import { client } from './connection/GqlClient';
+import { getApolloClient } from './connection/GqlClient';
 
 ReactDOM.render((
-<ApolloProvider client={client}>
+<ApolloProvider client={getApolloClient()}>
     <App />
 </ApolloProvider>
 ) , document.getElementById('root'));

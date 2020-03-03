@@ -1,6 +1,6 @@
 import React, { FunctionComponent, ChangeEvent, MouseEvent } from 'react'
 import './ProfileEdit.css'
-import TextInput from './TextInput'
+import TextInput from '../TextInput/TextInput'
 
 type ProfileEditProps = {
     firstName: string,

@@ -10,7 +10,7 @@ type AppState = {
     user: any
 }
 
-const getAuthTokenFromCookie = () => {
+export const getAuthTokenFromCookie = () => {
     const cookies = new Cookies()
     if(cookies.get('user')){
         const jsonString = decodeURIComponent(cookies.get('user'))

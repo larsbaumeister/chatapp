@@ -1,6 +1,6 @@
 import React, {FunctionComponent} from 'react'
 import { Link } from 'react-router-dom'
-import TextInput from './TextInput'
+import TextInput from '../TextInput/TextInput'
 import './ChatBottomBar.css'
 
 type ChatBottomBarProps = {

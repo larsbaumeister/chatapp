@@ -1,8 +1,8 @@
 import React, { FunctionComponent, useState } from 'react'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { gql } from 'apollo-boost'
-import ProfileEdit from '../components/ProfileEdit'
+import ProfileEdit from '../components/ProfileEdit/ProfileEdit'
 import FriendList from '../components/FriendList'
+import gql from 'graphql-tag'
 
 type ProfilePageProps = {
     

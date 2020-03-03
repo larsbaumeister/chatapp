@@ -1,5 +1,5 @@
 import React, {FunctionComponent} from 'react'
-import MessageBubble from './MessageBubble'
+import MessageBubble from './MessageBubble/MessageBubble'
 
 type ChatPanelProps = {
     chats: any
@@ -11,7 +11,7 @@ const ChatPanel: FunctionComponent<ChatPanelProps> = (props: any) => {
 
     return (
         <div className='chat-panel'>
-            { chat.messages.map((m: any) => <MessageBubble message={m} />) }
+            { chat.messages.map((m: any) => <MessageBubble key={m.id} message={m} />) }
         </div>
     )
 }

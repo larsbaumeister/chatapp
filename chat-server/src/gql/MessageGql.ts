@@ -1,6 +1,6 @@
 import { Connection } from "typeorm"
 import { Message } from "../entity/Message"
-import { gql, UserInputError, AuthenticationError } from 'apollo-server'
+import { gql, UserInputError, AuthenticationError, withFilter } from 'apollo-server'
 import { MessageRepository } from "../repo/MessageRepository"
 import { getRepo, CTX } from ".."
 import { UserRepository } from "../repo/UserRepository"
@@ -32,15 +32,33 @@ export const MessageGql = {
         }
 
         type Mutation {
-            sendMessage(message: SendMessageInput): Message
+            sendMessage(message: SendMessageInput!): Message
             receiveMessage(messageId: Int!): Message
             readMessage(messageId: Int!): Message
-        }`,
+        }
+
+        type Subscription {
+            messageSend(receiverId: Int!): Message
+            messageReceived(senderId: Int!): Message
+            messageRead(senderId: Int!): Message
+        }
+        `,
 
     resolver: {
         Query: {
             messages: async (parent, args, ctx: CTX) => await getRepo(ctx, MessageRepository).find(),
             loadChat: async (parent, {user1Id, user2Id}, ctx: CTX) => await getRepo(ctx, MessageRepository).findMessageForChat(user1Id, user2Id)
+        },
+        Subscription: {
+            messageSend: {
+                subscribe: withFilter(() => PUB_SUB.asyncIterator(EventType.MessageSend), (payload, args) => payload.messageSend.receiverId === args.receiverId)
+            },
+            messageReceived: {
+                subscribe: withFilter(() => PUB_SUB.asyncIterator(EventType.MessageReceived), (payload, args) => payload.messageReceived.senderId === args.senderId)
+            },
+            messageRead: {
+                subscribe: withFilter(() => PUB_SUB.asyncIterator(EventType.MessageRead), (payload, args) => payload.messageRead.senderId === args.senderId)
+            }
         },
         Mutation: {
             sendMessage: async (parent, {message}, ctx: CTX) => {
@@ -49,7 +67,7 @@ export const MessageGql = {
                 message.sendDate = new Date()
 
                 const savedMessage: Message = await getRepo(ctx, MessageRepository).save(message)
-                PUB_SUB.publish(EventType.MessageSend, savedMessage)
+                PUB_SUB.publish(EventType.MessageSend, { messageSend: savedMessage })
                 return savedMessage
             },
             receiveMessage: async (parent, {messageId}, ctx: CTX) => {
@@ -63,7 +81,7 @@ export const MessageGql = {
                     throw new AuthenticationError('You are not permitted to do this!')
 
                 const savedMessage: Message = await msgRepo.save(message)
-                PUB_SUB.publish(EventType.MessageReceived, savedMessage)
+                PUB_SUB.publish(EventType.MessageReceived, { messageReceived: savedMessage })
                 return savedMessage
             },
             readMessage: async (parent, {messageId}, ctx: CTX) => {
@@ -76,7 +94,7 @@ export const MessageGql = {
                     throw new AuthenticationError('You are not permitted to do this!')
 
                 const savedMessage: Message = await msgRepo.save(message)
-                PUB_SUB.publish(EventType.MessageRead, savedMessage)
+                PUB_SUB.publish(EventType.MessageRead, { messageRead: savedMessage })
                 return savedMessage
             }
         },

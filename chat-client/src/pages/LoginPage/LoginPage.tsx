@@ -1,10 +1,10 @@
 import React, { FunctionComponent, useState, ChangeEvent, Fragment } from 'react'
 import './LoginPage.css'
-import ProfileEdit from '../../components/ProfileEdit'
-import LoginPanel from '../../components/LoginPanel'
-import { gql } from 'apollo-boost'
+import ProfileEdit from '../../components/ProfileEdit/ProfileEdit'
+import LoginPanel from '../../components/LoginPanel/LoginPanel'
 import { useMutation, useQuery, useLazyQuery, useApolloClient } from '@apollo/react-hooks'
 import { match } from 'react-router-dom'
+import gql from 'graphql-tag'
 
 type LoginPageProps = {
     match: match<any>,

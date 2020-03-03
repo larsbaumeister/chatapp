@@ -1,6 +1,6 @@
 import React, {FunctionComponent, Fragment, ChangeEvent} from 'react'
 import './LoginPanel.css'
-import TextInput from './TextInput'
+import TextInput from '../TextInput/TextInput'
 
 type LoginPanelProps = {
     email: string,

@@ -1,14 +1,20 @@
 .chat-bottom-bar {
     width: 100%;
     display: flex;
+    background-color: #eee;
+    box-sizing: border-box;
+    padding: 8px;
 }
 
 .chat-bottom-bar .textinput {
     flex-grow: 1;
+    height: 100%;
+    margin-top: 0px !important;
 }
 
 .chat-bottom-bar input {
     width: 100%;
+    height: 100%;
 }
 
 .chat-bottom-bar button {
