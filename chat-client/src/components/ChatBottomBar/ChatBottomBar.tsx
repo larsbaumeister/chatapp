@@ -1,4 +1,4 @@
-import React, {FunctionComponent, Fragment} from 'react'
+import React, {FunctionComponent, Fragment, KeyboardEvent} from 'react'
 import { Link } from 'react-router-dom'
 import TextInput from '../TextInput/TextInput'
 
@@ -18,6 +18,12 @@ type ChatBottomBarProps = {
 
 const ChatBottomBar: FunctionComponent<ChatBottomBarProps> = (props) => {
 
+    const handleKeyEvent = (evt: KeyboardEvent<HTMLDivElement>) => {
+        if(evt.key === 'Enter') {
+            props.onMessageSend()
+        }
+    }
+
     return (
         <div className='chat-bottom-bar'>
             <EmojiPickerButton 
@@ -25,7 +31,7 @@ const ChatBottomBar: FunctionComponent<ChatBottomBarProps> = (props) => {
                 onClick={props.onEmojiButtonClicked} 
                 onSelect={props.onEmojiSelected} 
             />
-            <TextInput value={props.text} onChange={ evt => props.onTextChange(evt.target.value) } />
+            <TextInput value={props.text} onChange={ evt => props.onTextChange(evt.target.value) } onKeyPress={handleKeyEvent}  />
             <button className='my-button' onClick={props.onMessageSend}>Send</button>
         </div>
     )

@@ -135,7 +135,6 @@ const ChatPage: FunctionComponent<ChatPageProps> = (props) => {
             }
         })
     }
-    
 
     if (loading)
         return <div>Loading...</div>
@@ -147,7 +146,12 @@ const ChatPage: FunctionComponent<ChatPageProps> = (props) => {
         <div className='chat-page'>
             <ChatList chats={data?.users?.[0]?.chats} />
 
-            <Route path='/chat/:userId' render={ props => <ChatPanel {...props} chats={data?.users?.[0]?.chats} onMessageSend={onMessageSend} />} />
+            <Route path='/chat/:userId' render={ props => 
+                <ChatPanel {...props} 
+                    chats={data?.users?.[0]?.chats}
+                    onMessageSend={onMessageSend}
+                />
+            } />
             <Route exact path='/' component={() => <h3>No chat selected...</h3>} />
 
         </div>
