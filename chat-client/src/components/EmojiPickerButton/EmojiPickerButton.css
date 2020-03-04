@@ -1,0 +1,13 @@
+.emoji-picker-overlay.active {
+    position: absolute;
+    top: -430px;
+    left: 0px;
+}
+
+.emoji-picker-overlay.inactive {
+    display: none;
+}
+
+.emoji-picker-button {
+    position: relative;
+}

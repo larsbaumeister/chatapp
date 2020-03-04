@@ -29,7 +29,7 @@ input[type=email] {
   outline: none;
 }
 
-button {
+.my-button {
   background-color: rgb(63, 189, 119);
   color: white;
   border: none;
@@ -40,7 +40,7 @@ button {
   border-radius: 5px;
 }
 
-button:hover {
+.my-button:hover {
   transform: translateY(-2px);
   cursor: pointer;
   box-shadow: 0px 6px 6px 0px rgba(0,0,0,0.2);

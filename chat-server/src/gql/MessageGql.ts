@@ -73,7 +73,7 @@ export const MessageGql = {
                 message.sendDate = new Date()
 
                 const savedMessage: Message = await getRepo(ctx, MessageRepository).save(message)
-                PUB_SUB.publish(EventType.MessageSend, { messageSend: savedMessage })
+                setTimeout(() => { PUB_SUB.publish(EventType.MessageSend, { messageSend: savedMessage }) }, 100)
                 return savedMessage
             },
             receiveMessage: async (parent, {messageId}, ctx: CTX) => {
@@ -87,7 +87,7 @@ export const MessageGql = {
                     throw new AuthenticationError('You are not permitted to do this!')
 
                 const savedMessage: Message = await msgRepo.save(message)
-                PUB_SUB.publish(EventType.MessageReceived, { messageReceived: savedMessage })
+                setTimeout(() => { PUB_SUB.publish(EventType.MessageReceived, { messageReceived: savedMessage }) }, 100)
                 return savedMessage
             },
             readMessage: async (parent, {messageId}, ctx: CTX) => {
@@ -100,7 +100,7 @@ export const MessageGql = {
                     throw new AuthenticationError('You are not permitted to do this!')
 
                 const savedMessage: Message = await msgRepo.save(message)
-                PUB_SUB.publish(EventType.MessageRead, { messageRead: savedMessage })
+                setTimeout(() => { PUB_SUB.publish(EventType.MessageRead, { messageRead: savedMessage }) }, 100)
                 return savedMessage
             }
         },

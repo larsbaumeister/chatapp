@@ -1,6 +1,7 @@
 import React, {FunctionComponent, Fragment, useState} from 'react'
 import MessageBubble from './MessageBubble/MessageBubble'
 import ChatBottomBar from './ChatBottomBar/ChatBottomBar'
+import { EmojiData, BaseEmoji } from 'emoji-mart'
 
 type ChatPanelProps = {
     chats: any,
@@ -8,13 +9,16 @@ type ChatPanelProps = {
 }
 
 type ChatPanelState = {
-    typedTexts: any
+    typedTexts: any,
+    emojiPickerOpen: any,
+
 }
 
 
 const ChatPanel: FunctionComponent<ChatPanelProps> = (props: any) => {
     const [state, setState] = useState<ChatPanelState>({
-        typedTexts: {}
+        typedTexts: {},
+        emojiPickerOpen: {}
     })
 
     const chatPartnerId = Number(props.match.params.userId)
@@ -26,12 +30,46 @@ const ChatPanel: FunctionComponent<ChatPanelProps> = (props: any) => {
             typedTexts: {
                 ...state.typedTexts,
                 [chatPartnerId]: text
-            }
+            },
+            emojiPickerOpen: { ...state.emojiPickerOpen }
         })
     }
 
     const onMessageSend = () => {
         props.onMessageSend(state.typedTexts[chatPartnerId], chatPartnerId)
+        setState({
+            ...state,
+            typedTexts: { 
+                ...state.typedTexts,
+                [chatPartnerId]: ''
+            },
+            emojiPickerOpen: { ...state.emojiPickerOpen }
+        })
+    }
+
+    const onEmojiSelected = (emoji: BaseEmoji) => {
+        setState({
+            ...state,
+            typedTexts: {
+                ...state.typedTexts,
+                [chatPartnerId]: state.typedTexts[chatPartnerId] + emoji.native
+            },
+            emojiPickerOpen: {
+                ...state.emojiPickerOpen,
+                [chatPartnerId]: false
+            }
+        })
+    }
+
+    const onEmojiButtonClicked = () => {
+        setState({
+            ...state,
+            typedTexts: { ...state.typedTexts },
+            emojiPickerOpen: { 
+                ...state.emojiPickerOpen,
+                [chatPartnerId]: !(state.emojiPickerOpen[chatPartnerId] || false)
+            },
+        })
     }
 
     return (
@@ -44,7 +82,13 @@ const ChatPanel: FunctionComponent<ChatPanelProps> = (props: any) => {
                 }
             </div>
 
-            <ChatBottomBar text={ state.typedTexts[chatPartnerId] || '' } onTextChange={ onTextChange } onMessageSend={ onMessageSend } />  
+            <ChatBottomBar 
+                text={ state.typedTexts[chatPartnerId] || '' } 
+                onTextChange={ onTextChange } 
+                onMessageSend={ onMessageSend } 
+                onEmojiButtonClicked={onEmojiButtonClicked}
+                onEmojiSelected={onEmojiSelected}
+                emojiPickedOpen={state.emojiPickerOpen[chatPartnerId] || false} />  
         </Fragment>
         
     )
