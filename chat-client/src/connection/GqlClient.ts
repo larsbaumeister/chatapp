@@ -1,4 +1,4 @@
-import { ApolloClient } from 'apollo-client'
+import { ApolloClient, DefaultOptions } from 'apollo-client'
 import { WebSocketLink } from 'apollo-link-ws'
 import { ApolloLink, split } from 'apollo-link'
 import { getAuthTokenFromCookie } from '../App'
@@ -45,6 +45,7 @@ export function getApolloClient() {
         }, wsLink, httpLink)
 
         const apolloLink = ApolloLink.from([terminatingLink])
+
 
         client = new ApolloClient({
             link: apolloLink,

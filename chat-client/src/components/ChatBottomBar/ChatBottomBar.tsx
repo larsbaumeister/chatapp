@@ -4,15 +4,17 @@ import TextInput from '../TextInput/TextInput'
 import './ChatBottomBar.css'
 
 type ChatBottomBarProps = {
-    
+    text: string,
+    onTextChange: (text: string) => void
+    onMessageSend: () => void
 }
 
 const ChatBottomBar: FunctionComponent<ChatBottomBarProps> = (props) => {
 
     return (
         <div className='chat-bottom-bar'>
-            <TextInput />
-            <button>Send</button>
+            <TextInput value={props.text} onChange={ evt => props.onTextChange(evt.target.value) } />
+            <button onClick={props.onMessageSend}>Send</button>
         </div>
     )
 }

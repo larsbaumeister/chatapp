@@ -38,9 +38,9 @@ export const MessageGql = {
         }
 
         type Subscription {
-            messageSend(receiverId: Int!): Message
-            messageReceived(senderId: Int!): Message
-            messageRead(senderId: Int!): Message
+            messageSend: Message
+            messageReceived: Message
+            messageRead: Message
         }
         `,
 
@@ -51,13 +51,19 @@ export const MessageGql = {
         },
         Subscription: {
             messageSend: {
-                subscribe: withFilter(() => PUB_SUB.asyncIterator(EventType.MessageSend), (payload, args) => payload.messageSend.receiverId === args.receiverId)
+                subscribe: withFilter(() => PUB_SUB.asyncIterator(EventType.MessageSend), (payload, args, ctx) => {
+                    return payload.messageSend.receiverId === ctx.auth.id || payload.messageSend.senderId === ctx.auth.id
+                })
             },
             messageReceived: {
-                subscribe: withFilter(() => PUB_SUB.asyncIterator(EventType.MessageReceived), (payload, args) => payload.messageReceived.senderId === args.senderId)
+                subscribe: withFilter(() => PUB_SUB.asyncIterator(EventType.MessageReceived), (payload, args, ctx) => {
+                    return payload.messageReceived.senderId === ctx.auth.id || payload.messageSend.senderId === ctx.auth.id
+                })
             },
             messageRead: {
-                subscribe: withFilter(() => PUB_SUB.asyncIterator(EventType.MessageRead), (payload, args) => payload.messageRead.senderId === args.senderId)
+                subscribe: withFilter(() => PUB_SUB.asyncIterator(EventType.MessageRead), (payload, args, ctx) => {
+                    return payload.messageRead.senderId === args.senderId || payload.messageSend.senderId === ctx.auth.id
+                })
             }
         },
         Mutation: {

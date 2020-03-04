@@ -1,19 +1,14 @@
-import React, { FunctionComponent, useState, useEffect } from 'react'
+import React, { FunctionComponent, useEffect } from 'react'
 import ChatList from '../../components/ChatList'
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery, useMutation } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import ChatPanel from '../../components/ChatPanel'
 import './ChatPage.css'
 import { Route } from 'react-router-dom'
-import ChatBottomBar from '../../components/ChatBottomBar/ChatBottomBar'
-import { valueToObjectRepresentation } from 'apollo-utilities'
+
 
 type ChatPageProps = {
     userId: number
-}
-
-type ChatPageState = {
-
 }
 
 const CHAT_PAGE_QUERY = gql`
@@ -48,9 +43,17 @@ query($userId: Int!) {
 }
 `
 
+const SEND_MESSAGE_MUTATION = gql`
+    mutation sendMessage($msg: SendMessageInput!) {
+        sendMessage(message: $msg){
+            id
+        }
+    }
+`
+
 const MESSAGE_SEND_SUBSCRIPTION = gql`
-    subscription($receiverId: Int!) {
-        messageSend(receiverId: $receiverId) {
+    subscription {
+        messageSend {
             id
             content
             sender {
@@ -71,20 +74,27 @@ const MESSAGE_SEND_SUBSCRIPTION = gql`
 `
 
 const ChatPage: FunctionComponent<ChatPageProps> = (props) => {
-
     const { data, loading, error, subscribeToMore } = useQuery(CHAT_PAGE_QUERY, { variables: { userId: props.userId }})
+    const [ sendMessage ] = useMutation(SEND_MESSAGE_MUTATION)
 
     useEffect(() => {
+        // subscribe for new messages
         const onUnsubscribe =  subscribeToMore({
             document: MESSAGE_SEND_SUBSCRIPTION,
-            variables: { receiverId: props.userId },
+            onError: err => { 
+                console.error(err)
+            },
             updateQuery: (prev, { subscriptionData }) => {
-                if (!subscriptionData.data) return prev;
+                if (!subscriptionData.data)
+                    return prev;
+                
                 const newMessage = subscriptionData.data.messageSend;
+                console.log('Received new message: ', newMessage)
                 
                 // copy all the messages and insert the new message
                 const newChats = prev.users?.[0]?.chats.map((c: any) => {
                     const newChat = { 
+                        ...c,
                         otherUser: { ...c.otherUser },
                         messages: [ ...c.messages?.map((m: any) => {
                             return {
@@ -94,13 +104,16 @@ const ChatPage: FunctionComponent<ChatPageProps> = (props) => {
                             }
                         })]
                     }
-                    if (newMessage.sender.id === c.otherUser.id) {
+                    if (newMessage.sender.id === c.otherUser.id || newMessage.receiver.id === c.otherUser.id) {
                         newChat.messages.push(newMessage)
                     }
                     return newChat
                 })
     
-                return { users: [{ chats: newChats }] }
+                return { users: [{
+                        ...prev.users?.[0],
+                        chats: newChats
+                    }] }
             }
         })
 
@@ -110,6 +123,18 @@ const ChatPage: FunctionComponent<ChatPageProps> = (props) => {
             onUnsubscribe()
         }
     })
+
+    const onMessageSend = (text: string, receiverId: number) => {
+        sendMessage({
+            variables: { 
+                msg: {
+                    senderId: props.userId,
+                    receiverId: receiverId,
+                    content: text
+                }
+            }
+        })
+    }
     
 
     if (loading)
@@ -122,10 +147,9 @@ const ChatPage: FunctionComponent<ChatPageProps> = (props) => {
         <div className='chat-page'>
             <ChatList chats={data?.users?.[0]?.chats} />
 
-            <Route path='/chat/:userId' render={ props => <ChatPanel {...props} chats={data?.users?.[0]?.chats} />} />
+            <Route path='/chat/:userId' render={ props => <ChatPanel {...props} chats={data?.users?.[0]?.chats} onMessageSend={onMessageSend} />} />
             <Route exact path='/' component={() => <h3>No chat selected...</h3>} />
 
-            <ChatBottomBar />
         </div>
     )
 }
