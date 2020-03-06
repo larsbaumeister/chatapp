@@ -49,11 +49,16 @@ const App: FunctionComponent<{}> = () => {
 
     return (
         <Router>
-            <Route path='/user/:userId' component={ProfilePage} />
-
+            { authToken 
+                ?   <Fragment>
+                        <Route path='/user/:userId' component={ProfilePage} />
+                        <Route path='/chat/:otherUserId' render={ props => <ChatPage {...props} userId={user.id} /> } />
+                    </Fragment>
+                : null}
+            
             { authToken
-                ? (<Route path='/' render={ props => <ChatPage {...props} userId={user.id} /> } />) 
-                : (<Route path='/' render={ props => <LoginPage {...props} onUserLogin={onUserLogin} /> } />) }
+                ? (<Route exact path='/' render={ props => <ChatPage {...props} userId={user.id} /> } />) 
+                : (<Route exact path='/' render={ props => <LoginPage {...props} onUserLogin={onUserLogin} /> } />) }
         </Router>
     )
 }

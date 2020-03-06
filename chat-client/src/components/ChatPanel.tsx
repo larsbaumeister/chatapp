@@ -5,7 +5,8 @@ import { BaseEmoji } from 'emoji-mart'
 
 type ChatPanelProps = {
     chats: any,
-    onMessageSend: (text: string, receiverId: number) => void
+    onMessageSend: (text: string, receiverId: number) => void,
+    otherUserId: number
 }
 
 type ChatPanelState = {
@@ -37,28 +38,26 @@ class ChatPanel extends React.Component<ChatPanelProps, ChatPanelState> {
     }
 
     render() {
-        
-        const chatPartnerId = Number((this.props as any).match.params.userId)
-        const chat = this.props.chats?.find((c: any) => c.otherUser.id === chatPartnerId)
+        const chat = this.props.chats?.find((c: any) => c.otherUser.id === this.props.otherUserId)
 
         const onTextChange = (text: string) => {
             this.setState({
                 ...this.state,
                 typedTexts: {
                     ...this.state.typedTexts,
-                    [chatPartnerId]: text
+                    [this.props.otherUserId]: text
                 },
                 emojiPickerOpen: { ...this.state.emojiPickerOpen }
             })
         }
 
         const onMessageSend = () => {
-            this.props.onMessageSend(this.state.typedTexts[chatPartnerId], chatPartnerId)
+            this.props.onMessageSend(this.state.typedTexts[this.props.otherUserId], this.props.otherUserId)
             this.setState({
                 ...this.state,
                 typedTexts: { 
                     ...this.state.typedTexts,
-                    [chatPartnerId]: ''
+                    [this.props.otherUserId]: ''
                 },
                 emojiPickerOpen: { ...this.state.emojiPickerOpen }
             })
@@ -69,11 +68,11 @@ class ChatPanel extends React.Component<ChatPanelProps, ChatPanelState> {
                 ...this.state,
                 typedTexts: {
                     ...this.state.typedTexts,
-                    [chatPartnerId]: (this.state.typedTexts[chatPartnerId] || '') + emoji.native
+                    [this.props.otherUserId]: (this.state.typedTexts[this.props.otherUserId] || '') + emoji.native
                 },
                 emojiPickerOpen: {
                     ...this.state.emojiPickerOpen,
-                    [chatPartnerId]: false
+                    [this.props.otherUserId]: false
                 }
             })
         }
@@ -84,7 +83,7 @@ class ChatPanel extends React.Component<ChatPanelProps, ChatPanelState> {
                 typedTexts: { ...this.state.typedTexts },
                 emojiPickerOpen: { 
                     ...this.state.emojiPickerOpen,
-                    [chatPartnerId]: !(this.state.emojiPickerOpen[chatPartnerId] || false)
+                    [this.props.otherUserId]: !(this.state.emojiPickerOpen[this.props.otherUserId] || false)
                 },
             })
         }
@@ -100,12 +99,12 @@ class ChatPanel extends React.Component<ChatPanelProps, ChatPanelState> {
                 </div>
     
                 <ChatBottomBar 
-                    text={ this.state.typedTexts[chatPartnerId] || '' } 
+                    text={ this.state.typedTexts[this.props.otherUserId] || '' } 
                     onTextChange={ onTextChange } 
                     onMessageSend={ onMessageSend } 
                     onEmojiButtonClicked={onEmojiButtonClicked}
                     onEmojiSelected={onEmojiSelected}
-                    emojiPickedOpen={ this.state.emojiPickerOpen[chatPartnerId] || false } />  
+                    emojiPickedOpen={ this.state.emojiPickerOpen[this.props.otherUserId] || false } />  
             </Fragment>
             
         )

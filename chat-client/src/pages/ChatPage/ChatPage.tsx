@@ -77,6 +77,9 @@ const ChatPage: FunctionComponent<ChatPageProps> = (props) => {
     const { data, loading, error, subscribeToMore } = useQuery(CHAT_PAGE_QUERY, { variables: { userId: props.userId }})
     const [ sendMessage ] = useMutation(SEND_MESSAGE_MUTATION)
 
+
+    const otherUserId = Number((props as any).match.params.otherUserId)
+
     useEffect(() => {
         // subscribe for new messages
         const onUnsubscribe =  subscribeToMore({
@@ -144,15 +147,16 @@ const ChatPage: FunctionComponent<ChatPageProps> = (props) => {
 
     return (
         <div className='chat-page'>
-            <ChatList chats={data?.users?.[0]?.chats} />
+            <ChatList 
+                    chats={data?.users?.[0]?.chats} 
+                    otherUserId={otherUserId} 
+            />
 
-            <Route path='/chat/:userId' render={ props => 
-                <ChatPanel {...props} 
+            <ChatPanel {...props} 
                     chats={data?.users?.[0]?.chats}
                     onMessageSend={onMessageSend}
-                />
-            } />
-            <Route exact path='/' component={() => <h3>No chat selected...</h3>} />
+                    otherUserId={otherUserId}
+            />
 
         </div>
     )

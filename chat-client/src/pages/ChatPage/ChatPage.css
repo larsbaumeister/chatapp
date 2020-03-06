@@ -11,7 +11,7 @@
 
 .chat-list {
     grid-area: chatlist;
-    background-color: rgb(63, 189, 119);
+    background-color: #eee;
 }
 
 .chat-panel {
@@ -24,10 +24,22 @@
 }
 
 .chat-list-card {
-    background-color: #f5f5f5;
-    padding: 7px 14px;
-    margin: 4px;
-    border-radius: 7px;
+    background-color: #fafafa;
+    border-bottom: 1px solid #ccc;
+    padding: 15px 10px;
+    transition: all ease-in .1s;
+}
+
+.chat-list-card.active {
+    background-color: rgb(63, 189, 119);
+}
+
+.chat-list-card:hover:not(.active) {
+    background-color: rgb(232, 241, 237);
+}
+
+.chat-list-card.active:hover {
+    background-color: rgb(104, 190, 143);
 }
 
 .chat-list-card .username {
@@ -36,8 +48,8 @@
 }
 
 .chat-list-card .last-message {
-    font-size: .8em;
-    color: #555;
+    padding-top: 5px;
+    font-size: .9em;
 }
 
 .chat-list a {
