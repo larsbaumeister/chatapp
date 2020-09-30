@@ -1,5 +1,5 @@
 import "reflect-metadata"
-import {createConnection, PromiseUtils, Connection, ObjectType} from "typeorm"
+import {createConnection, Connection, ObjectType} from "typeorm"
 import { UserGql } from './gql/UserGql'
 import { MessageGql } from './gql/MessageGql'
 
@@ -110,8 +110,10 @@ function setupApolloServer(dbConnection: Connection) {
 
 
 
-createConnection().then(async connection => {
-
+console.log('Creating Database connection...')
+createConnection().then(connection => {
+    console.log('Starting Apollo Server...')
     setupApolloServer(connection)
-
-}).catch(error => console.log(error))
+}).catch(err => {
+    console.log(err)
+})
